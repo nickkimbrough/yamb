@@ -29,14 +29,21 @@ namespace YAMB.Services
         public async Task StartAsync()
         {
             //TODO: Move to config.
-            string token = "ASECRET";
-            if (string.IsNullOrEmpty(token))
+            string youtubeApiKey = Environment.GetEnvironmentVariable("YAMB_YOUTUBE_API");
+            if (string.IsNullOrEmpty(youtubeApiKey))
             {
                 // TODO: Better error.
-                throw new Exception("Token not found.");
+                throw new Exception("YAMB_YOUTUBE_API environment variable not found.");
             }
 
-            await _client.LoginAsync(TokenType.Bot, token);
+            string discordApiKey = Environment.GetEnvironmentVariable("YAMB_DISCORD_BOT");
+            if (string.IsNullOrEmpty(discordApiKey))
+            {
+                // TODO: Better error.
+                throw new Exception("YAMB_DISCORD_BOT environment variable not found.");
+            }
+
+            await _client.LoginAsync(TokenType.Bot, discordApiKey);
             await _client.StartAsync();
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
